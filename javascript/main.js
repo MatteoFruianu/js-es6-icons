@@ -131,7 +131,23 @@ $(document).ready (function() {
 
     printIcons(coloredIcons, container)
 
+    // 3.Filter Icons by type
 
+    const select = $("#type"); //riferimento al select html
+    const types = getType(icons); //funzione che ritorna il type
+                                  //qua si poteva passare anche coloredIcons       
+
+    //event change  
+
+    genOption(types, select);
+
+    select.change( () => {
+      const selected = select.val();
+
+
+      const filteredIcons = filterIcons(coloredIcons, selected);
+      printIcons(filteredIcons, container)
+    });
 
 }); //end document ready
 
@@ -144,6 +160,8 @@ $(document).ready (function() {
  */
 
 function printIcons(icons, container) { //per stampare avrò bisogno di un loop sull'array icons, che creo col ciclo forEach
+
+    container.html(" ");
 
     icons.forEach((icon) => { //ad ogni iterazione 'icon' rappresenta ciascun oggetto presente nell'array principale 'icons'
         const {family, prefix, name, color} = icon;  //utilizzo la destrutturazione per estrapolare variabili dalle proprietà dell'0ggetto
@@ -218,6 +236,36 @@ function printIcons(icons, container) { //per stampare avrò bisogno di un loop 
          return types;
      }
 
+
+
+     /**
+     * genera un opzione in base al type
+     */
+
+     function genOption(types, select) {
+       types.forEach( (option) =>{
+         select.append(`<option value="${option}">${option}</option>`)
+       } )
+     };
+
+
+    //  filter icons display
+
+    function filterIcons(coloredIcons, selected) {
+
+      if (selected === "all") {
+        return coloredIcons;
+      }
+
+      const filtered = coloredIcons.filter( (icon) => {
+
+          return icon.type === selected;
+
+      } );
+
+      return filtered;
+
+    }
 
 
       
