@@ -108,8 +108,28 @@ $(document).ready (function() {
 
 
     //stampare icone sullo schermo - creo una funzione dove passerò i parametri icons e container
+    //questa funzione stampa le icone senza colorazioni
 
-    printIcons(icons, container) //questa è l'invocazione, la funzione è creata sotto fuori dal doc ready
+    // 1.print icons
+
+    // printIcons(icons, container) //questa è l'invocazione, la funzione è creata sotto fuori dal doc ready
+
+
+    //2.print coloured icons
+
+    // creo un array di colori, ciascuno dei quali corrisponderà a una delle tre categorie di oggetti
+
+    const colors = [
+        "blue", 
+        "orange", 
+        "purple"]
+
+
+    // chiamo la funzione (creata più giù) per colorare le icone a seconda della categoria di appartenenza 
+
+    const coloredIcons = colorizeIcons(icons, colors);
+
+    printIcons(coloredIcons, container)
 
 
 
@@ -126,7 +146,7 @@ $(document).ready (function() {
 function printIcons(icons, container) { //per stampare avrò bisogno di un loop sull'array icons, che creo col ciclo forEach
 
     icons.forEach((icon) => { //ad ogni iterazione 'icon' rappresenta ciascun oggetto presente nell'array principale 'icons'
-        const {family, prefix, name} = icon;  //utilizzo la destrutturazione per estrapolare variabili dalle proprietà dell'0ggetto
+        const {family, prefix, name, color} = icon;  //utilizzo la destrutturazione per estrapolare variabili dalle proprietà dell'0ggetto
 
         /**
          * const family = icon.family;
@@ -138,17 +158,65 @@ function printIcons(icons, container) { //per stampare avrò bisogno di un loop 
 
          const html =   //questo sarà ciò che verrà immesso nell'html
          `<div class="icon">
-            <i class="${family} ${prefix}${name}"></i> 
-            <div class="title">Cat</div>
+            <i class="${family} ${prefix}${name}" style="color: ${color}"></i> 
+            <div class="title">${name}</div>
         </div>`; 
         // inserisco dinamicamente i dati all'intero del tag i con le interpolazioni ${x} ricordando che vengono considerati anche spazi e indentazioni
         
         
-        container.append(html)
+        container.append(html) //tramite il metodo append inserisco la const 'html' nella pagina
     });
 
 }
 
+
+/**
+ * Color Icons by type
+ */
+
+ function colorizeIcons(icons, colors) {
+        //get types
+
+        const types = getType(icons) // chiamo la funzione
+
+        
+
+       
+        //assign types on color
+
+        const coloredIcons = icons.map( (icon) => {
+
+            const indexType = types.indexOf(icon.type)
+                return {
+                    ...icon,
+                    color: colors[indexType]
+                };
+
+             
+        });
+
+        return coloredIcons;
+ }
+
+        
+
+    /**
+     * get icon types = creo una funzione per ottenere i tipi di icona
+     */
+
+     function getType(icons) {
+         const types = [] //creo un array vuoto dove andranno i diversi type di icone (univoci)
+
+         icons.forEach((icon) => {
+
+            if (! types.includes(icon.type)) {
+                types.push(icon.type)
+            }
+
+         });
+
+         return types;
+     }
 
 
 
